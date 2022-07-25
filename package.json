@@ -1,0 +1,27 @@
+{
+  "name": "relational-databases-part14",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toorhamza/fsoHelsinki-relational-databases.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/toorhamza/fsoHelsinki-relational-databases/issues"
+  },
+  "homepage": "https://github.com/toorhamza/fsoHelsinki-relational-databases#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19",
+    "pg": "^8.7.3",
+    "sequelize": "^6.21.3"
+  }
+}
