@@ -1,18 +1,18 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 
-const { Users, Blog } = require("../models");
+const { Users, Blog, ReadingList } = require("../models");
 
 const userFinder = async (req, res, next) => {
-  req.user = await Users.findByPk(req.params.username);
+  req.findUser = await Users.findByPk(req.params.username);
   next();
 };
 
 router.get("/", async (req, res, next) => {
   try {
     const users = await Users.findAll({
-        include: { model: Blog, attributes: { exclude: ["userId"] } },
-      });
+      include: { model: Blog, attributes: { exclude: ["userId"] } },
+    });
     res.json(users);
   } catch (error) {
     next(error);
@@ -47,17 +47,38 @@ router.put("/:username", userFinder, async (req, res, next) => {
   }
 });
 
-/* router.get("/:id", userFinder, async (req, res) => {
+router.get("/:id", async (req, res, next) => {
+  const id = req.params.id;
+  const where = {};
+  if (req.query.read) {
+    where.read = req.query.read;
+  }
   try {
-    if (req.user) {
-      res.json(req.user);
-    } else {
-      res.status(404).end();
-    }
+    const findUser = await Users.findAll({
+      id,
+      include: [
+        {
+          model: Blog,
+          as: "readings",
+          attributes: { exclude: ["userId"] },
+          through: {
+            attributes: ["id", "read"],
+            where,
+          },
+          include: {
+            model: ReadingList,
+            as: "reading_list",
+            attributes: { exclude: ["read", "id"] },
+          },
+        },
+      ],
+    });
+    res.json(findUser);
+    res.status(404).end();
   } catch (error) {
     next(error);
   }
-}); */
+});
 
 /* router.delete("/:id", userFinder, async (req, res) => {
   try {

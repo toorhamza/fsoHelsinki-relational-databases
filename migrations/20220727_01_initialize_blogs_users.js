@@ -25,14 +25,14 @@ module.exports = {
         allowNull: false,
         defaultValue: 0,
       },
-      updated_at: {
+      updatedAt: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
         defaultValue: DataTypes.NOW,
       },
-      created_at: {
+      createdAt: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
         defaultValue: DataTypes.NOW,
       },
     });
@@ -60,6 +60,16 @@ module.exports = {
       },
       admin: { type: DataTypes.BOOLEAN, defaultValue: false },
       disabled: { type: DataTypes.BOOLEAN, defaultValue: false },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW,
+      },
     });
     await queryInterface.addColumn("blogs", "userId", {
       type: DataTypes.INTEGER,
@@ -68,10 +78,6 @@ module.exports = {
         model: "users",
         key: "id",
       },
-    });
-    await queryInterface.addColumn("users", "blog_id", {
-      type: DataTypes.INTEGER,
-      references: { model: "blogs", key: "id" },
     });
   },
   down: async ({ context: queryInterface }) => {

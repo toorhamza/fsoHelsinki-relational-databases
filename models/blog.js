@@ -30,11 +30,29 @@ const Blogs = sequelize.define(
       allowNull: false,
       references: { model: "users", key: "id" },
     },
+    year: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 1991,
+        max: new Date().getFullYear(),
+      },
+    },
   },
   {
     sequelize,
-    timestamps: false,
     modelName: "blogs",
+    hooks: {
+      beforeCreate: function (blogs, options, fn) {
+        blogs.createdAt = new Date();
+        blogs.updatedAt = new Date();
+        sequelize.fn(null, blogs);
+      },
+      beforeUpdate: function (blogs, options, fn) {
+        blogs.updatedAt = new Date();
+        sequelize.fn(null, blogs);
+      },
+    },
   }
 );
 

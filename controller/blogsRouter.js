@@ -15,16 +15,16 @@ router.get("/", async (req, res, next) => {
         [Op.or]: [
           {
             title: {
-              [Op.substring]: req.query.search
-            }
+              [Op.substring]: req.query.search,
+            },
           },
           {
             author: {
-              [Op.substring]: req.query.search
-            }
-          }
-        ]
-      }
+              [Op.substring]: req.query.search,
+            },
+          },
+        ],
+      };
     }
 
     const blogs = await Blog.findAll({

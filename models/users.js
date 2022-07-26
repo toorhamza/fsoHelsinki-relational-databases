@@ -14,8 +14,8 @@ const Users = sequelize.define(
       unique: true,
       allowNull: false,
       validate: {
-        isEmail: true,    
-      }
+        isEmail: true,
+      },
     },
     name: {
       type: DataTypes.STRING,
@@ -28,8 +28,19 @@ const Users = sequelize.define(
   },
   {
     sequelize,
-    timestamps: true,
+    timestamps: false,
     modelName: "users",
+    hooks: {
+      beforeCreate: function (blogs, options, fn) {
+        blogs.createdAt = new Date();
+        blogs.updatedAt = new Date();
+        sequelize.fn(null, blogs);
+      },
+      beforeUpdate: function (blogs, options, fn) {
+        blogs.updatedAt = new Date();
+        sequelize.fn(null, blogs);
+      },
+    },
   }
 );
 
