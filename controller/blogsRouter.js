@@ -1,5 +1,5 @@
 const router = require("express").Router();
-
+const { Op } = require("sequelize");
 const { Blog, Users } = require("../models");
 
 const blogFinder = async (req, res, next) => {
@@ -9,9 +9,27 @@ const blogFinder = async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
+    let where = {};
+    if (req.query.search) {
+      where = {
+        [Op.or]: [
+          {
+            title: {
+              [Op.substring]: req.query.search
+            }
+          },
+          {
+            author: {
+              [Op.substring]: req.query.search
+            }
+          }
+        ]
+      }
+    }
+
     const blogs = await Blog.findAll({
       include: { model: Users, attributes: { exclude: ["userId"] } },
-
+      where,
     });
     res.json(blogs);
   } catch (error) {
@@ -22,10 +40,14 @@ router.get("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const username = req.user.username;
-    console.log(req.user)
-    const user = await Users.findByPk(req.user.id)
-    console.log(user)
-    const blog = await Blog.create({ ...req.body, author: username, userId: user.id });
+    console.log(req.user);
+    const user = await Users.findByPk(req.user.id);
+    console.log(user);
+    const blog = await Blog.create({
+      ...req.body,
+      author: username,
+      userId: user.id,
+    });
     res.json(blog);
   } catch (error) {
     next(error);
@@ -46,11 +68,11 @@ router.get("/:id", blogFinder, async (req, res) => {
 
 router.delete("/:id", blogFinder, async (req, res, next) => {
   try {
-    const user = req.user.username
+    const user = req.user.username;
     if (req.blog && req.blog.author === user) {
       await req.blog.destroy();
     } else {
-      throw new Error("Can't delete other author's blog")
+      throw new Error("Can't delete other author's blog");
     }
     res.status(204).end();
   } catch (error) {
