@@ -30,6 +30,7 @@ router.get("/", async (req, res, next) => {
     const blogs = await Blog.findAll({
       include: { model: Users, attributes: { exclude: ["userId"] } },
       where,
+      order: [["likes", "DESC"]],
     });
     res.json(blogs);
   } catch (error) {
