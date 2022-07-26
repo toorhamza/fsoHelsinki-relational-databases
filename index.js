@@ -2,31 +2,30 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
+const { connectToDb } = require("./util/db");
 const Blog = require("./models/blog");
+
+const blogsRouter = require("./controller/blogsRouter");
 
 app.use(express.json());
 
-app.get("/api/blogs", async (req, res) => {
-  const blogs = await Blog.findAll();
-  res.json(blogs);
-});
+app.use("/api/blogs", blogsRouter);
 
-app.post("/api/blogs", async (req, res) => {
-  console.log(req.body);
-  const blog = await Blog.create({ ...req.body });
-  return res.json(blog);
-});
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message);
+  response.status(400).json(JSON.stringify(error.message)).end();
+  next(error);
+};
 
-app.delete("/api/blogs/:id", async (req, res) => {
-  console.log("executed");
-  const blog = await Blog.findByPk(req.params.id);
-  if (blog) {
-    await blog.destroy();
-    return res.json(blog);
-  }
-});
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+const start = async () => {
+  await connectToDb();
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+start();

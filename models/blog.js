@@ -4,8 +4,8 @@ const { sequelize } = require("../util/db");
 const Blogs = sequelize.define('blogs', {
   id: {
     type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
+    autoIncrement: true
   },
   author: {
     type: DataTypes.STRING,
