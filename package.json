@@ -18,9 +18,11 @@
   },
   "homepage": "https://github.com/toorhamza/fsoHelsinki-relational-databases#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.19",
     "pg": "^8.7.3",
     "sequelize": "^6.21.3"

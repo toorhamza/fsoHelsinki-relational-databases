@@ -7,7 +7,7 @@ const blogFinder = async (req, res, next) => {
   next();
 };
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const blogs = await Blog.findAll();
     res.json(blogs);
@@ -16,9 +16,10 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
-    const blog = await Blog.create({ ...req.body });
+    const user = req.user.username
+    const blog = await Blog.create({ ...req.body, author: user });
     res.json(blog);
   } catch (error) {
     next(error);

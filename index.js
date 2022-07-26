@@ -3,13 +3,18 @@ const express = require("express");
 const app = express();
 
 const { connectToDb } = require("./util/db");
-const Blog = require("./models/blog");
 
 const blogsRouter = require("./controller/blogsRouter");
+const usersRouter = require("./controller/usersRouter");
+const loginRouter = require("./controller/loginRouter");
+
+const authenticate = require("./middleware/auth")
 
 app.use(express.json());
 
-app.use("/api/blogs", blogsRouter);
+app.use("/api/blogs", authenticate, blogsRouter);
+app.use("/api/users", authenticate, usersRouter);
+app.use("/api/login", loginRouter);
 
 const errorHandler = (error, request, response, next) => {
   console.log(error.message);
