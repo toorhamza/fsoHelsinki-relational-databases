@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 
-const { Users } = require("../models");
+const { Users, Blog } = require("../models");
 
 const userFinder = async (req, res, next) => {
   req.user = await Users.findByPk(req.params.username);
@@ -10,7 +10,9 @@ const userFinder = async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    const users = await Users.findAll();
+    const users = await Users.findAll({
+        include: { model: Blog, attributes: { exclude: ["userId"] } },
+      });
     res.json(users);
   } catch (error) {
     next(error);

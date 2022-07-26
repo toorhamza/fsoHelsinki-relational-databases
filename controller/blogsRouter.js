@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const { Blog } = require("../models");
+const { Blog, Users } = require("../models");
 
 const blogFinder = async (req, res, next) => {
   req.blog = await Blog.findByPk(req.params.id);
@@ -9,7 +9,10 @@ const blogFinder = async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    const blogs = await Blog.findAll();
+    const blogs = await Blog.findAll({
+      include: { model: Users, attributes: { exclude: ["userId"] } },
+
+    });
     res.json(blogs);
   } catch (error) {
     next(error);
@@ -18,8 +21,11 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    const user = req.user.username
-    const blog = await Blog.create({ ...req.body, author: user });
+    const username = req.user.username;
+    console.log(req.user)
+    const user = await Users.findByPk(req.user.id)
+    console.log(user)
+    const blog = await Blog.create({ ...req.body, author: username, userId: user.id });
     res.json(blog);
   } catch (error) {
     next(error);
