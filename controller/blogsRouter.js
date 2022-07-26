@@ -38,18 +38,21 @@ router.get("/:id", blogFinder, async (req, res) => {
   }
 });
 
-router.delete("/:id", blogFinder, async (req, res) => {
+router.delete("/:id", blogFinder, async (req, res, next) => {
   try {
+    const user = req.user.username
+    if (req.blog && req.blog.author === user) {
+      await req.blog.destroy();
+    } else {
+      throw new Error("Can't delete other author's blog")
+    }
+    res.status(204).end();
   } catch (error) {
     next(error);
   }
-  if (req.blog) {
-    await req.blog.destroy();
-  }
-  res.status(204).end();
 });
 
-router.put("/:id", blogFinder, async (req, res) => {
+router.put("/:id", blogFinder, async (req, res, next) => {
   try {
     if (req.blog) {
       req.blog.author = req.body.author || req.blog.author;

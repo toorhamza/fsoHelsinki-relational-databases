@@ -31,7 +31,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put("/:username", userFinder, async (req, res) => {
+router.put("/:username", userFinder, async (req, res, next) => {
   try {
     if (req.user) {
       req.user.username = req.body.username || req.user.username;
