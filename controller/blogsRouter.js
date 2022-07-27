@@ -41,9 +41,7 @@ router.get("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const username = req.user.username;
-    console.log(req.user);
     const user = await Users.findByPk(req.user.id);
-    console.log(user);
     const blog = await Blog.create({
       ...req.body,
       author: username,
